@@ -1,34 +1,134 @@
-<div class="flowers-container">
-    <div class="message">
-      <h1>{{ message }}</h1>
-      <h2>{{ subMessage }}</h2>
-      <div class="heart-container">
-        <div class="heart" [class.beat]="isHeartBeating">❤️</div>
-      </div>
-      <p class="special-note">{{ specialNote }}</p>
+<main class="page-shell">
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <div class="petal-rain" aria-hidden="true">
+    <span *ngFor="let petal of petals" [style.--petal-index]="petal"></span>
+  </div>
+
+  <nav class="glass-nav" aria-label="Navegación principal">
+    <a class="brand" href="#inicio" aria-label="Ir al inicio">
+      <span class="brand-flower">✦</span>
+      <span>Para ti</span>
+    </a>
+    <div class="nav-links">
+      <a href="#recuerdos">Recuerdos</a>
+      <a href="#carta" (click)="$event.preventDefault(); openLetter()">Mi carta</a>
     </div>
-    
-    <div class="flowers-field">
-      <div *ngFor="let flower of flowers; let i = index" class="flower" [style.animationDelay]="i*0.2 + 's'">
-        <div class="center"></div>
-        <div class="petals p1"></div>
-        <div class="petals p2"></div>
-        <div class="petals p3"></div>
-        <div class="petals p4"></div>
-        <div class="petals p5"></div>
-        <div class="petals p6"></div>
-        <div class="petals p7"></div>
-        <div class="petals p8"></div>
-        <div class="stem">
-          <div class="leaf left"></div>
-          <div class="leaf right"></div>
+    <span class="date-pill">21 · 09 · 2026</span>
+  </nav>
+
+  <section class="hero" id="inicio">
+    <div class="hero-copy">
+      <p class="eyebrow"><span></span> Flores amarillas para ti</p>
+      <h1>Donde estés,<br><em>siempre florecemos.</em></h1>
+      <p class="hero-intro">No hace falta estar cerca para sentirte conmigo. Hoy cada flor lleva un pedacito de todo lo bonito que eres para mí.</p>
+
+      <div class="hero-actions">
+        <button class="primary-button" type="button" (click)="toggleLetter()">
+          <span>{{ letterOpen ? 'Cerrar mi carta' : 'Abrir mi carta' }}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+        <button class="text-button" type="button" (click)="scrollToMemories()">
+          Ver nuestros recuerdos
+          <span aria-hidden="true">↓</span>
+        </button>
+      </div>
+
+      <div class="tiny-note">
+        <div class="avatar-stack" aria-hidden="true">
+          <img src="photos/juntos-04.jpeg" alt="">
+          <img src="photos/juntos-06.jpeg" alt="">
+          <span>♥</span>
+        </div>
+        <p><strong>Una historia que sigue floreciendo</strong><br>Un recuerdo a la vez.</p>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-label="Nuestro recuerdo favorito">
+      <div class="sunflower flower-top" aria-hidden="true"><span>🌻</span></div>
+      <div class="sunflower flower-bottom" aria-hidden="true"><span>🌻</span></div>
+
+      <div class="photo-card liquid-glass">
+        <div class="photo-frame">
+          <img src="photos/juntos-06.jpeg" alt="Nosotros abrazados y sonriendo juntos">
+        </div>
+        <div class="photo-meta">
+          <div>
+            <span>Nuestro amor</span>
+            <strong>Mi lugar seguro</strong>
+          </div>
+          <span class="heart-badge" aria-hidden="true">♥</span>
         </div>
       </div>
+
+      <div class="floating-note liquid-glass">
+        <span aria-hidden="true">☀</span>
+        <p>Te elegiría en<br><strong>todas mis vidas.</strong></p>
+      </div>
     </div>
-  
-    <div class="falling-petals">
-      <div *ngFor="let i of fallingPetals; let index = index" class="falling-petal" 
-           [style.left]="(index * 10) + '%'" 
-           [style.animationDelay]="index + 's'"></div>
+  </section>
+
+  <section class="letter-wrap" id="carta" [class.is-open]="letterOpen" aria-live="polite">
+    <div class="letter liquid-glass">
+      <div class="letter-heading">
+        <div>
+          <span class="letter-kicker">Unas palabras desde el corazón</span>
+          <h2>{{ message }}</h2>
+        </div>
+        <button class="letter-mark" type="button" aria-label="Cerrar la carta" title="Cerrar carta" (click)="closeLetter()">×</button>
+      </div>
+      <p>{{ specialNote }}</p>
+      <div class="signature">
+        <span>Con todo mi amor, siempre.</span>
+        <strong>Para mi novia hermosa</strong>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section class="memories" id="recuerdos">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><span></span> Nuestro pequeño universo</p>
+        <h2>Pedacitos de <em>nosotros.</em></h2>
+      </div>
+      <p>Momentos simples que, contigo, se volvieron mis favoritos.</p>
+    </div>
+
+    <div class="photo-grid">
+      <button
+        *ngFor="let photo of photos; let i = index"
+        type="button"
+        class="memory-card"
+        [class.featured]="i === 0 || i === 8"
+        (click)="openPhoto(i)"
+        [attr.aria-label]="'Abrir foto: ' + photo.caption">
+        <img [src]="photo.src" [alt]="photo.alt" loading="lazy">
+        <span class="memory-overlay">
+          <span>{{ (i + 1).toString().padStart(2, '0') }}</span>
+          <strong>{{ photo.caption }}</strong>
+          <i aria-hidden="true">↗</i>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-flower" aria-hidden="true">🌻</span>
+    <p>{{ subMessage }}</p>
+    <span>Hecho con amor, para ti.</span>
+  </footer>
+</main>
+
+<div class="lightbox" *ngIf="selectedPhotoIndex !== null" role="dialog" aria-modal="true" aria-label="Foto ampliada" (click)="closePhoto()">
+  <button class="lightbox-close" type="button" aria-label="Cerrar foto" (click)="closePhoto()">×</button>
+  <button class="lightbox-arrow previous" type="button" aria-label="Foto anterior" (click)="$event.stopPropagation(); changePhoto(-1)">‹</button>
+  <figure (click)="$event.stopPropagation()">
+    <img [src]="photos[selectedPhotoIndex].src" [alt]="photos[selectedPhotoIndex].alt">
+    <figcaption>
+      <span>{{ (selectedPhotoIndex + 1).toString().padStart(2, '0') }} / {{ photos.length }}</span>
+      <strong>{{ photos[selectedPhotoIndex].caption }}</strong>
+    </figcaption>
+  </figure>
+  <button class="lightbox-arrow next" type="button" aria-label="Foto siguiente" (click)="$event.stopPropagation(); changePhoto(1)">›</button>
+</div>
